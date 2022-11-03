@@ -48,17 +48,19 @@ def basic_preprocess(df, train=True, target="transported"):
     df['vip'] = df['vip'].map({True: 1, False: 0})
 
     # splitting 'Cabin' from `deck/num/side` to only `deck`
-    logging.info('Splitting "cabin" from `deck/num/side` to only `deck`')
-    df['cabin'] = df['cabin'].str.split('/').str[0]
-
+    logging.info('Splitting "cabin" from `deck/num/side` to `deck` `number` and `side`')
+    df['cabin_deck'] = df['cabin'].str.split('/').str[0]
+    df['cabin_number'] = df['cabin'].str.split('/').str[1].astype('float')
+    df['cabin_side'] = df['cabin'].str.split('/').str[2]
+    df.drop('cabin', axis=1, inplace=True)
 
     # categorical columns
-    cat_cols = df.select_dtypes(include=['object']).columns
+    cat_cols = df.select_dtypes(include=['object']).columns.tolist()
     logging.info(f"Found {len(cat_cols)} categorical columns")
     logging.info(f"Categorical columns: {cat_cols}")
 
     # numerical columns
-    num_cols = df.select_dtypes(exclude=['object']).columns
+    num_cols = df.select_dtypes(exclude=['object']).columns.tolist()
     logging.info(f"Found {len(num_cols)} numerical columns")
     logging.info(f"Numerical columns: {num_cols}")
 
@@ -75,9 +77,9 @@ def basic_preprocess(df, train=True, target="transported"):
     # remove target from cat_cols or num_cols
     logging.info('Removing target from cat_cols or num_cols')
     if target in cat_cols:
-        cat_cols = cat_cols.drop(target)
+        cat_cols = [col for col in cat_cols if col != target]
     if target in num_cols:
-        num_cols = num_cols.drop(target)
+        num_cols = [col for col in num_cols if col != target]
 
     # Fill categorical columns with mode
     logging.info('Filling categorical columns with mode')
@@ -89,7 +91,11 @@ def basic_preprocess(df, train=True, target="transported"):
     for col in num_cols:
         df[col] = df[col].fillna(df[col].mean())
 
-    return df, cat_cols, num_cols, target
+    cat_cols_to_use = ['homeplanet', 'destination', 'cabin_deck', 'cabin_side']
+    df['cryosleep'] = df['cryosleep'].astype('category')
+    df['vip'] = df['vip'].astype('category')
+
+    return df, cat_cols_to_use, num_cols, target
 
 
 if __name__ == "__main__":
