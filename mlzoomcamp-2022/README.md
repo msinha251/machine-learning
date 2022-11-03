@@ -2,6 +2,11 @@
 
 This contains the course progression of <a href='https://github.com/alexeygrigorev/mlbookcamp-code/tree/master/course-zoomcamp/cohorts/2022'> mlzoomcamp-2022 </a> course.
 
+### Projects 
+
+- [Midterm Project](https://github.com/msinha251/mlzoomcamp-midterm-project-2022)
+
+
 ### Environment Setup on EC2:
 * Created EC2 instance with Ubuntu image.<br>
 * ssh into ec2 machine<br>
@@ -20,4 +25,4 @@ Ref: a href='https://www.how2shout.com/linux/how-to-install-anacondaon-ubuntu-22
 * Open jupyter notebook
 `jupyter notebook`
 
-### 
+
